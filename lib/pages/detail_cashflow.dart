@@ -112,10 +112,7 @@ class _DetailCashflowPageState extends State<DetailCashflowPage> {
         padding: const EdgeInsets.only(bottom: 30),
         child: FloatingActionButton(
           onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => DashboardPage(user: widget.user)));
+            Navigator.push(context,MaterialPageRoute(builder: (context) => DashboardPage(user: widget.user)));
           },
           backgroundColor: const Color(0xFF2C2020),
           child: const Icon(

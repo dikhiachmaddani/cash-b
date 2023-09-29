@@ -4,10 +4,9 @@ import 'package:cashbook/pages/expense_form.dart';
 import 'package:cashbook/pages/income_form.dart';
 import 'package:cashbook/pages/setting.dart';
 import 'package:cashbook/pages/detail_cashflow.dart';
+import 'package:cashbook/components/graph.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-
-import 'package:intl/intl.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({Key? key, required this.user}) : super(key: key);
@@ -21,6 +20,13 @@ class _DashboardPageState extends State<DashboardPage> {
   final dbHelper = DbHelper();
   List<FlSpot> incomeDataChart = [];
   List<FlSpot> expenseDataChart = [];
+
+  List<FlSpot> initIncomeDataChart = [
+    FlSpot(DateTime.now().millisecondsSinceEpoch.toDouble(), 0),
+  ];
+  List<FlSpot> initExpenseDataChart = [
+    FlSpot(DateTime.now().millisecondsSinceEpoch.toDouble(), 0),
+  ];
 
   double totalIncome = 0.0;
   double totalExpense = 0.0;
@@ -54,7 +60,7 @@ class _DashboardPageState extends State<DashboardPage> {
       incomeDataChart = getIncomeDataChart;
     });
   }
-  
+
   Future<void> _fetchexpenseChart() async {
     final getexpenseDataChart = await dbHelper.getExpenseDataForChart();
     setState(() {
@@ -91,40 +97,9 @@ class _DashboardPageState extends State<DashboardPage> {
                         left: 20, right: 40, top: 30, bottom: 30),
                     child: AspectRatio(
                       aspectRatio: 2,
-                      child: LineChart(
-                        LineChartData(
-                          lineBarsData: [
-                            LineChartBarData(
-                                spots: incomeDataChart,
-                                isCurved: true,
-                                dotData: FlDotData(
-                                  show: false,
-                                ),
-                                color: const Color.fromARGB(255, 23, 154, 69),
-                                ),
-                            LineChartBarData(
-                                spots: expenseDataChart,
-                                isCurved: true,
-                                dotData: FlDotData(
-                                  show: false,
-                                ),
-                                color: const Color.fromARGB(255, 181, 29, 29)),
-                          ],
-                          borderData: FlBorderData(
-                              border: const Border(
-                                  bottom: BorderSide(color: Color(0xFFFFB03A)),
-                                  left: BorderSide(color: Color(0xFFFFB03A)))),
-                          gridData: FlGridData(show: false),
-                          titlesData: FlTitlesData(
-                            bottomTitles: AxisTitles(sideTitles: _bottomTitles),
-                            leftTitles: AxisTitles(sideTitles: _leftTitles),
-                            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                          ),
-                        ),
-                        swapAnimationDuration:const Duration(milliseconds: 250),
-                        swapAnimationCurve: Curves.linear,
-                      ),
+                      child: Graph(
+                        incomeDataChart: incomeDataChart != [] ? incomeDataChart: initIncomeDataChart,
+                        expenseDataChart: expenseDataChart != [] ? expenseDataChart : initExpenseDataChart),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -292,51 +267,4 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
     );
   }
-
-  SideTitles get _bottomTitles => SideTitles(
-        showTitles: true,
-        reservedSize: 10,
-        getTitlesWidget: (value, meta) {
-          // Convert the value (which is in milliseconds since epoch) to a DateTime.
-          final dateTime = DateTime.fromMillisecondsSinceEpoch(value.toInt());
-          String month = "";
-          switch (dateTime.month) {
-            case 1:
-              month = 'Jan';
-              break;
-            case 3:
-              month = 'Mar';
-              break;
-            case 5:
-              month = 'May';
-              break;
-            case 7:
-              month = 'Jul';
-              break;
-            case 9:
-              month = 'Sep';
-              break;
-            case 11:
-              month = 'Nov';
-              break;
-          }
-          return Text(
-            '${dateTime.day} $month',
-            style: const TextStyle(fontSize: 9, color: Color(0xFFFFB03A)),
-          );
-        },
-      );
-
-  SideTitles get _leftTitles => SideTitles(
-        showTitles: true,
-        reservedSize: 30,
-        getTitlesWidget: (value, meta) {
-          final currencyFormatter =
-              NumberFormat.compactCurrency(locale: 'id_ID', symbol: '');
-          return Text(
-            currencyFormatter.format(value),
-            style: const TextStyle(fontSize: 10, color: Color(0xFFFFB03A)),
-          );
-        },
-      );
 }

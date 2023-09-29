@@ -35,6 +35,34 @@ class _IncomeFormPageState extends State<IncomeFormPage> {
     }
   }
 
+  Future<void> addData() async {
+    final DateTime parsedDate =
+        DateFormat('dd/MM/yyyy').parse(dateController.text);
+    final double nominal = double.parse(nominalController.text);
+    final String desc = descController.text;
+
+    final Finance finance = Finance(
+      type: 'income',
+      date: parsedDate,
+      nominal: nominal,
+      desc: desc,
+    );
+
+    try {
+      final dbHelper = DbHelper();
+      await dbHelper.insertFinance(finance);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DashboardPage(user: widget.user),
+        ),
+      );
+    } catch (e) {
+      print("Error inserting finance data: $e");
+      // Handle the error as needed
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -155,32 +183,7 @@ class _IncomeFormPageState extends State<IncomeFormPage> {
                         fontSize: 12,
                         color: Color.fromARGB(255, 242, 242, 242),
                         fontWeight: FontWeight.w500)),
-                onPressed: () async {
-                  final DateTime parsedDate = DateFormat('dd/MM/yyyy').parse(dateController.text);
-                  final double nominal = double.parse(nominalController.text);
-                  final String desc = descController.text;
-
-                  final Finance finance = Finance(
-                    type:'income',
-                    date: parsedDate,
-                    nominal: nominal,
-                    desc: desc,
-                  );
-
-                  try {
-                    final dbHelper = DbHelper();
-                    await dbHelper.insertFinance(finance);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DashboardPage(user: widget.user),
-                      ),
-                    );
-                  } catch (e) {
-                    print("Error inserting finance data: $e");
-                    // Handle the error as needed
-                  }
-                },
+                onPressed: addData,
               ),
             ),
           ),

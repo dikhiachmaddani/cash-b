@@ -68,15 +68,6 @@ class DbHelper {
       columnUserUsername: 'admin',
       columnUserPassword: 'admin123',
     });
-
-    final currentTimeMillis = DateTime.now().millisecondsSinceEpoch;
-
-    await db.insert(tableFinance, {
-      columnFinanceType: 'income',
-      columnFinanceDate: currentTimeMillis,
-      columnFinanceNominal: 20000.0,
-      columnFinanceDesc: 'Income 1',
-    });
   }
 
   //get all data
