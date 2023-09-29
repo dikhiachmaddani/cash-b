@@ -65,8 +65,8 @@ class DbHelper {
     ''');
 
     await db.insert(tableUser, {
-      columnUserUsername: 'admin',
-      columnUserPassword: 'admin123',
+      columnUserUsername: 'user',
+      columnUserPassword: 'user',
     });
   }
 

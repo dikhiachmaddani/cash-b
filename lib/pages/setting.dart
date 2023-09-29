@@ -179,6 +179,13 @@ class _SettingPageState extends State<SettingPage> {
                                 fontWeight: FontWeight.bold),
                           ),
                           Text(
+                            'Nama: Dikhi Achmad Dani',
+                            style: TextStyle(
+                                color: Color(0xFF2C2020),
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
                             'NIM: 2141764159',
                             style: TextStyle(
                                 color: Color(0xFF2C2020),
